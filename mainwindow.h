@@ -7,7 +7,6 @@
 #include <QFile>
 #include <QString>
 #include <QTextStream>
-#include <QDebug>
 #include <algorithm>
 #include <utility>
 #include <QPushButton>
@@ -41,8 +40,8 @@ public slots:
 
 private:
     Ui::MainWindow *ui;
-    QLabel *vmap[10][10], *bmap[10][10], *background = new QLabel(this), *cleared;
-    int map[10][10], backmap[10][10], N, M, step, cnt, all, lvl;
+    QLabel *vmap[20][20], *bmap[20][20], *background = new QLabel(this), *cleared;
+    int map[20][20], backmap[20][20], N, M, step, cnt, all, lvl, mx;
     std::pair<int, int> play;
     QFile f;
     QPixmap pixs[5], none;

@@ -19,6 +19,6 @@ I did features below.
 I use file I/O to load level so if you want to add some map into this game,  
 you can add file named `level_<number>.dat` to `datas` directory and add to resource.  
 The `<number>` of level should be continuous increasing.  
-The size of map is at most 10*10  
+The size of map is at most 20*20  
   
 And I change Window name and icon, too.

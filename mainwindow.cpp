@@ -15,9 +15,9 @@ MainWindow::MainWindow(QWidget *parent) :
     pixs[2].load(":/images/goal.png");
     pixs[3].load(":/images/ground.png");
     pixs[4].load(":/images/player.png");
-    for(int i = 0; i < 10; i++)
+    for(int i = 0; i < 20; i++)
     {
-        for(int j = 0; j < 10; j++)
+        for(int j = 0; j < 20; j++)
         {
             bmap[i][j] = new QLabel(this);
             vmap[i][j] = new QLabel(this);
@@ -254,6 +254,14 @@ void MainWindow::start_level()
     QString s;
     QStringList lst;
     QFile f;
+    for(int i = 0; i < 20; i++)
+    {
+        for(int j = 0; j < 20; j++)
+        {
+            bmap[i][j]->clear();
+            vmap[i][j]->clear();
+        }
+    }
     f.setFileName(":/datas/level_" + QString::number(lvl) + ".dat");
     if(!f.open(QIODevice::ReadOnly | QIODevice::Text))
         return;
@@ -276,6 +284,7 @@ void MainWindow::start_level()
                 backmap[i][j] = 3;
         }
     }
+    mx = std::max(N, M);
     f.close();
     ui->Level->display(QString::number(lvl));
     ui->NextLevel_Button->hide();
@@ -288,6 +297,14 @@ void MainWindow::start_save()
     QString s;
     QStringList lst;
     QFile f;
+    for(int i = 0; i < 20; i++)
+    {
+        for(int j = 0; j < 20; j++)
+        {
+            bmap[i][j]->clear();
+            vmap[i][j]->clear();
+        }
+    }
     f.setFileName(QDir("datas/save.dat").absolutePath());
     if(!f.open(QIODevice::ReadOnly | QIODevice::Text))
         return;
@@ -318,6 +335,7 @@ void MainWindow::start_save()
             backmap[i][j] = lst[j].toInt();
         }
     }
+    mx = std::max(N, M);
     f.close();
     ui->Level->display(QString::number(lvl));
     ui->NextLevel_Button->hide();
@@ -331,8 +349,8 @@ void MainWindow::paintmap()
     {
         for(int j = 0; j < M; j++)
         {
-            bmap[i][j]->setGeometry(j * 80, i * 80, 80, 80);
-            vmap[i][j]->setGeometry(j * 80, i * 80, 80, 80);
+            bmap[i][j]->setGeometry(j * (800. / mx), i * (800. / mx), (800. / mx), (800. / mx));
+            vmap[i][j]->setGeometry(j * (800. / mx), i * (800. / mx), (800. / mx), (800. / mx));
             if(backmap[i][j] == 1)
                 bmap[i][j]->setPixmap(pixs[1]);
             else if(backmap[i][j] == 2)
