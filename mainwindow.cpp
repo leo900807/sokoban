@@ -6,7 +6,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    background->setGeometry(0, -100, 1000, 740);
+    background->setGeometry(0, 0, 1000, 800);
     background->setPixmap(QPixmap(":/images/Title.jpg"));
     background->setScaledContents(1);
     none.load(":/images/none.png");
@@ -28,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent) :
         for(int j = 0; j < 4; j++)
         {
             level_Button[i][j] = new QPushButton(this);
-            level_Button[i][j]->setGeometry(j * 70 + 360, i * 70 + 100, 50, 50);
+            level_Button[i][j]->setGeometry(j * 70 + 370, i * 70 + 250, 50, 50);
             level_Button[i][j]->setText(QString::number(i * 4 + j + 1));
             if(!QFile(":/datas/level_" + QString::number(i * 4 + j + 1) + ".dat").exists())
                 level_Button[i][j]->setEnabled(0);
@@ -40,19 +40,19 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(mapper, SIGNAL(mapped(int)), this, SLOT(Level_Choose(int)));
     cleared = new QLabel(this);
     New_game = new QPushButton(this);
-    New_game->setGeometry(390, 200, 200, 50);
+    New_game->setGeometry(400, 300, 200, 50);
     New_game->setText("New Game");
     Choose_level = new QPushButton(this);
-    Choose_level->setGeometry(390, 270, 200, 50);
+    Choose_level->setGeometry(400, 370, 200, 50);
     Choose_level->setText("Choose Level");
     Load_game = new QPushButton(this);
-    Load_game->setGeometry(390, 340, 200, 50);
+    Load_game->setGeometry(400, 440, 200, 50);
     Load_game->setText("Load Game");
     Exit = new QPushButton(this);
-    Exit->setGeometry(390, 410, 200, 50);
+    Exit->setGeometry(400, 510, 200, 50);
     Exit->setText("Exit");
     Back_Button = new QPushButton(this);
-    Back_Button->setGeometry(390, 410, 200, 50);
+    Back_Button->setGeometry(400, 570, 200, 50);
     Back_Button->setText("Back");
     Back_Button->hide();
     show_main();
@@ -369,7 +369,7 @@ void MainWindow::paintmap()
 
 void MainWindow::level_clear()
 {
-    cleared->setGeometry(210, 130, 400, 300);
+    cleared->setGeometry(210, 250, 400, 300);
     cleared->setPixmap(QPixmap(":/images/Level_Cleared.png"));
     cleared->setScaledContents(1);
     cleared->show();
@@ -377,7 +377,7 @@ void MainWindow::level_clear()
 
 void MainWindow::all_clear()
 {
-    cleared->setGeometry(190, 120, 400, 300);
+    cleared->setGeometry(190, 240, 400, 300);
     cleared->setPixmap(QPixmap(":/images/All_Cleared.png"));
     cleared->setScaledContents(1);
     cleared->show();
