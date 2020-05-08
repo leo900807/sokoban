@@ -9,5 +9,7 @@
         <file>datas/level_1.dat</file>
         <file>images/none.png</file>
         <file>datas/level_2.dat</file>
+        <file>images/All_Cleared.png</file>
+        <file>images/Level_Cleared.png</file>
     </qresource>
 </RCC>

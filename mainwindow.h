@@ -30,13 +30,14 @@ public slots:
     void New_Game();
     void Load_Game();
     void Quit();
+    void NextLevel();
     void Replay();
     void Save();
     void MainMenu();
 
 private:
     Ui::MainWindow *ui;
-    QLabel *vmap[10][10], *bmap[10][10], *background = new QLabel(this);
+    QLabel *vmap[10][10], *bmap[10][10], *background = new QLabel(this), *cleared;
     int map[10][10], backmap[10][10], N, M, step, cnt, all, lvl;
     std::pair<int, int> play;
     QFile f;
@@ -48,6 +49,8 @@ private:
     QDir dir;
     void hide_main();
     void show_main();
+    void level_clear();
+    void all_clear();
 
 };
 

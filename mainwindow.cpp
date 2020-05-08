@@ -7,8 +7,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     background->setGeometry(0, -100, 1000, 740);
-    QPixmap title(":/images/Title.jpg");
-    background->setPixmap(title);
+    background->setPixmap(QPixmap(":/images/Title.jpg"));
     background->setScaledContents(1);
     none.load(":/images/none.png");
     pixs[0].load(":/images/box.png");
@@ -24,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
             vmap[i][j] = new QLabel(this);
         }
     }
+    cleared = new QLabel(this);
     New_game = new QPushButton(this);
     New_game->setGeometry(390, 200, 200, 50);
     New_game->setText("New Game");
@@ -48,6 +48,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(New_game, SIGNAL(clicked()), this, SLOT(New_Game()));
     connect(Load_game, SIGNAL(clicked()), this, SLOT(Load_Game()));
     connect(Exit, SIGNAL(clicked()), this, SLOT(Quit()));
+    connect(ui->NextLevel_Button, SIGNAL(clicked()), this, SLOT(NextLevel()));
     connect(ui->Replay_Button, SIGNAL(clicked()), this, SLOT(Replay()));
     connect(ui->Save_Button, SIGNAL(clicked()), this, SLOT(Save()));
     connect(ui->MainMenu_Button, SIGNAL(clicked()), this, SLOT(MainMenu()));
@@ -61,9 +62,13 @@ void MainWindow::show_main()
     Exit->show();
     ui->Step_Label->hide();
     ui->Step->hide();
+    ui->Level_Label->hide();
+    ui->Level->hide();
+    ui->NextLevel_Button->hide();
     ui->Replay_Button->hide();
     ui->Save_Button->hide();
     ui->MainMenu_Button->hide();
+    cleared->hide();
     QFile f;
     f.setFileName(QDir("datas/save.dat").absolutePath());
     if(!f.open(QIODevice::ReadOnly))
@@ -85,6 +90,8 @@ void MainWindow::hide_main()
     Exit->hide();
     ui->Step_Label->show();
     ui->Step->show();
+    ui->Level_Label->show();
+    ui->Level->show();
     ui->Replay_Button->show();
     ui->Save_Button->show();
     ui->MainMenu_Button->show();
@@ -106,6 +113,11 @@ void MainWindow::Load_Game()
 void MainWindow::Quit()
 {
     this->close();
+}
+
+void MainWindow::NextLevel()
+{
+    lvl++, start_level();
 }
 
 void MainWindow::Replay()
@@ -160,7 +172,7 @@ void MainWindow::start_level()
     QString s;
     QStringList lst;
     QFile f;
-    f.setFileName(":/datas/level_" + QString::number(lvl)  + ".dat");
+    f.setFileName(":/datas/level_" + QString::number(lvl) + ".dat");
     if(!f.open(QIODevice::ReadOnly | QIODevice::Text))
         return;
     QTextStream in(&f);
@@ -183,6 +195,10 @@ void MainWindow::start_level()
         }
     }
     f.close();
+    ui->Level->display(QString::number(lvl));
+    ui->NextLevel_Button->hide();
+    ui->Save_Button->setEnabled(1);
+    cleared->hide();
     paintmap();
 }
 
@@ -217,6 +233,10 @@ void MainWindow::start_save()
         }
     }
     f.close();
+    ui->Level->display(QString::number(lvl));
+    ui->NextLevel_Button->hide();
+    ui->Save_Button->setEnabled(1);
+    cleared->hide();
     paintmap();
 }
 
@@ -251,7 +271,35 @@ void MainWindow::paintmap()
             if(backmap[i][j] == 2 && map[i][j] >= 5)
                 cnt--;
     if(cnt == 0)
-        lvl++, start_level();
+    {
+        if(QFile(":/datas/level_" + QString::number(lvl + 1) + ".dat").exists())
+        {
+            ui->NextLevel_Button->show();
+            ui->Save_Button->setEnabled(0);
+            level_clear();
+        }
+        else
+        {
+            ui->Save_Button->setEnabled(0);
+            all_clear();
+        }
+    }
+}
+
+void MainWindow::level_clear()
+{
+    cleared->setGeometry(210, 130, 400, 300);
+    cleared->setPixmap(QPixmap(":/images/Level_Cleared.png"));
+    cleared->setScaledContents(1);
+    cleared->show();
+}
+
+void MainWindow::all_clear()
+{
+    cleared->setGeometry(190, 120, 400, 300);
+    cleared->setPixmap(QPixmap(":/images/All_Cleared.png"));
+    cleared->setScaledContents(1);
+    cleared->show();
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *e)
