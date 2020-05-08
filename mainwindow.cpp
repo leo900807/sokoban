@@ -24,10 +24,6 @@ MainWindow::MainWindow(QWidget *parent) :
             vmap[i][j] = new QLabel(this);
         }
     }
-    ui->Step_Label->hide();
-    ui->Step->hide();
-    ui->Save_Button->hide();
-    ui->MainMenu_Button->hide();
     New_game = new QPushButton(this);
     New_game->setGeometry(390, 200, 200, 50);
     New_game->setText("New Game");
@@ -37,6 +33,7 @@ MainWindow::MainWindow(QWidget *parent) :
     Exit = new QPushButton(this);
     Exit->setGeometry(390, 340, 200, 50);
     Exit->setText("Exit");
+    show_main();
     QFile f;
     f.setFileName(QDir("datas/save.dat").absolutePath());
     if(!f.open(QIODevice::ReadOnly))
@@ -51,6 +48,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(New_game, SIGNAL(clicked()), this, SLOT(New_Game()));
     connect(Load_game, SIGNAL(clicked()), this, SLOT(Load_Game()));
     connect(Exit, SIGNAL(clicked()), this, SLOT(Quit()));
+    connect(ui->Replay_Button, SIGNAL(clicked()), this, SLOT(Replay()));
     connect(ui->Save_Button, SIGNAL(clicked()), this, SLOT(Save()));
     connect(ui->MainMenu_Button, SIGNAL(clicked()), this, SLOT(MainMenu()));
 }
@@ -63,6 +61,7 @@ void MainWindow::show_main()
     Exit->show();
     ui->Step_Label->hide();
     ui->Step->hide();
+    ui->Replay_Button->hide();
     ui->Save_Button->hide();
     ui->MainMenu_Button->hide();
     QFile f;
@@ -86,6 +85,7 @@ void MainWindow::hide_main()
     Exit->hide();
     ui->Step_Label->show();
     ui->Step->show();
+    ui->Replay_Button->show();
     ui->Save_Button->show();
     ui->MainMenu_Button->show();
 }
@@ -106,6 +106,11 @@ void MainWindow::Load_Game()
 void MainWindow::Quit()
 {
     this->close();
+}
+
+void MainWindow::Replay()
+{
+    start_level();
 }
 
 void MainWindow::Save()

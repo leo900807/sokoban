@@ -30,6 +30,7 @@ public slots:
     void New_Game();
     void Load_Game();
     void Quit();
+    void Replay();
     void Save();
     void MainMenu();
 
