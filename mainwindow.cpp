@@ -23,16 +23,38 @@ MainWindow::MainWindow(QWidget *parent) :
             vmap[i][j] = new QLabel(this);
         }
     }
+    for(int i = 0; i < 4; i++)
+    {
+        for(int j = 0; j < 4; j++)
+        {
+            level_Button[i][j] = new QPushButton(this);
+            level_Button[i][j]->setGeometry(j * 70 + 360, i * 70 + 100, 50, 50);
+            level_Button[i][j]->setText(QString::number(i * 4 + j + 1));
+            if(!QFile(":/datas/level_" + QString::number(i * 4 + j + 1) + ".dat").exists())
+                level_Button[i][j]->setEnabled(0);
+            level_Button[i][j]->hide();
+            mapper->setMapping(level_Button[i][j], i * 4 + j + 1);
+            connect(level_Button[i][j], SIGNAL(clicked()), mapper, SLOT(map()));
+        }
+    }
+    connect(mapper, SIGNAL(mapped(int)), this, SLOT(Level_Choose(int)));
     cleared = new QLabel(this);
     New_game = new QPushButton(this);
     New_game->setGeometry(390, 200, 200, 50);
     New_game->setText("New Game");
+    Choose_level = new QPushButton(this);
+    Choose_level->setGeometry(390, 270, 200, 50);
+    Choose_level->setText("Choose Level");
     Load_game = new QPushButton(this);
-    Load_game->setGeometry(390, 270, 200, 50);
+    Load_game->setGeometry(390, 340, 200, 50);
     Load_game->setText("Load Game");
     Exit = new QPushButton(this);
-    Exit->setGeometry(390, 340, 200, 50);
+    Exit->setGeometry(390, 410, 200, 50);
     Exit->setText("Exit");
+    Back_Button = new QPushButton(this);
+    Back_Button->setGeometry(390, 410, 200, 50);
+    Back_Button->setText("Back");
+    Back_Button->hide();
     show_main();
     QFile f;
     f.setFileName(QDir("datas/save.dat").absolutePath());
@@ -43,11 +65,15 @@ MainWindow::MainWindow(QWidget *parent) :
         QTextStream in(&f);
         if(in.atEnd())
             Load_game->setEnabled(0);
+        else
+            Load_game->setEnabled(1);
     }
     f.close();
     connect(New_game, SIGNAL(clicked()), this, SLOT(New_Game()));
+    connect(Choose_level, SIGNAL(clicked()), this, SLOT(Choose_Level()));
     connect(Load_game, SIGNAL(clicked()), this, SLOT(Load_Game()));
     connect(Exit, SIGNAL(clicked()), this, SLOT(Quit()));
+    connect(Back_Button, SIGNAL(clicked()), this, SLOT(Back()));
     connect(ui->NextLevel_Button, SIGNAL(clicked()), this, SLOT(NextLevel()));
     connect(ui->Replay_Button, SIGNAL(clicked()), this, SLOT(Replay()));
     connect(ui->Save_Button, SIGNAL(clicked()), this, SLOT(Save()));
@@ -58,6 +84,7 @@ void MainWindow::show_main()
 {
     background->show();
     New_game->show();
+    Choose_level->show();
     Load_game->show();
     Exit->show();
     ui->Step_Label->hide();
@@ -78,6 +105,8 @@ void MainWindow::show_main()
         QTextStream in(&f);
         if(in.atEnd())
             Load_game->setEnabled(0);
+        else
+            Load_game->setEnabled(1);
     }
     f.close();
 }
@@ -86,6 +115,7 @@ void MainWindow::hide_main()
 {
     background->hide();
     New_game->hide();
+    Choose_level->hide();
     Load_game->hide();
     Exit->hide();
     ui->Step_Label->show();
@@ -104,6 +134,22 @@ void MainWindow::New_Game()
     start_level();
 }
 
+void MainWindow::Choose_Level()
+{
+    New_game->hide();
+    Choose_level->hide();
+    Load_game->hide();
+    Exit->hide();
+    for(int i = 0; i < 4; i++)
+    {
+        for(int j = 0; j < 4; j++)
+        {
+            level_Button[i][j]->show();
+        }
+    }
+    Back_Button->show();
+}
+
 void MainWindow::Load_Game()
 {
     hide_main();
@@ -113,6 +159,36 @@ void MainWindow::Load_Game()
 void MainWindow::Quit()
 {
     this->close();
+}
+
+void MainWindow::Back()
+{
+    New_game->show();
+    Choose_level->show();
+    Load_game->show();
+    Exit->show();
+    for(int i = 0; i < 4; i++)
+    {
+        for(int j = 0; j < 4; j++)
+        {
+            level_Button[i][j]->hide();
+        }
+    }
+    Back_Button->hide();
+}
+
+void MainWindow::Level_Choose(int chlvl)
+{
+    hide_main();
+    for(int i = 0; i < 4; i++)
+    {
+        for(int j = 0; j < 4; j++)
+        {
+            level_Button[i][j]->hide();
+        }
+    }
+    Back_Button->hide();
+    lvl = chlvl, start_level();
 }
 
 void MainWindow::NextLevel()
@@ -138,10 +214,16 @@ void MainWindow::Save()
     {
         for(int j = 0; j < M; j++)
         {
-            if(map[i][j] == -1)
-                out << backmap[i][j] << " ";
-            else
-                out << map[i][j] << " ";
+            out << map[i][j] << " ";
+        }
+        out << "\n";
+    }
+    out << "bmap\n";
+    for(int i = 0; i < N; i++)
+    {
+        for(int j = 0; j < M; j++)
+        {
+            out << backmap[i][j] << " ";
         }
         if(i < N - 1)
             out << "\n";
@@ -197,7 +279,6 @@ void MainWindow::start_level()
     f.close();
     ui->Level->display(QString::number(lvl));
     ui->NextLevel_Button->hide();
-    ui->Save_Button->setEnabled(1);
     cleared->hide();
     paintmap();
 }
@@ -218,24 +299,28 @@ void MainWindow::start_save()
     for(int i = 0; !in.atEnd(); N = ++i)
     {
         s = in.readLine();
+        if(s == "bmap")
+            break;
         lst = s.split(" ");
         for(int j = 0; j < lst.size() && lst[j] != ""; M = ++j)
         {
-            backmap[i][j] = map[i][j] = lst[j].toInt();
-            if(map[i][j] == 2)
-                map[i][j] = -1, all++;
-            if(map[i][j] == 3)
-                map[i][j] = -1;
+            map[i][j] = lst[j].toInt();
             if(map[i][j] == 4)
-                backmap[i][j] = 3, play = std::make_pair(i, j);
-            if(map[i][j] > 4)
-                backmap[i][j] = 3;
+                play = std::make_pair(i, j);
+        }
+    }
+    for(int i = 0; !in.atEnd(); ++i)
+    {
+        s = in.readLine();
+        lst = s.split(" ");
+        for(int j = 0; j < lst.size() && lst[j] != ""; ++j)
+        {
+            backmap[i][j] = lst[j].toInt();
         }
     }
     f.close();
     ui->Level->display(QString::number(lvl));
     ui->NextLevel_Button->hide();
-    ui->Save_Button->setEnabled(1);
     cleared->hide();
     paintmap();
 }
@@ -275,14 +360,10 @@ void MainWindow::paintmap()
         if(QFile(":/datas/level_" + QString::number(lvl + 1) + ".dat").exists())
         {
             ui->NextLevel_Button->show();
-            ui->Save_Button->setEnabled(0);
             level_clear();
         }
         else
-        {
-            ui->Save_Button->setEnabled(0);
             all_clear();
-        }
     }
 }
 

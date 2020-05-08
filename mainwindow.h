@@ -12,6 +12,7 @@
 #include <utility>
 #include <QPushButton>
 #include <QDir>
+#include <QSignalMapper>
 
 namespace Ui {
 class MainWindow;
@@ -29,7 +30,10 @@ public:
 public slots:
     void New_Game();
     void Load_Game();
+    void Choose_Level();
     void Quit();
+    void Back();
+    void Level_Choose(int);
     void NextLevel();
     void Replay();
     void Save();
@@ -45,12 +49,13 @@ private:
     void start_level();
     void start_save();
     void paintmap();
-    QPushButton *New_game, *Load_game, *Exit;
+    QPushButton *New_game, *Choose_level, *Load_game, *Exit, *level_Button[4][4], *Back_Button;
     QDir dir;
     void hide_main();
     void show_main();
     void level_clear();
     void all_clear();
+    QSignalMapper *mapper = new QSignalMapper();
 
 };
 
