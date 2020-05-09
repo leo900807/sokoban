@@ -82,6 +82,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 void MainWindow::show_main()
 {
+    lvl = 0;
     background->show();
     New_game->show();
     Choose_level->show();
@@ -345,6 +346,8 @@ void MainWindow::start_save()
 
 void MainWindow::paintmap()
 {
+    if(!lvl)
+        return;
     for(int i = 0; i < N; i++)
     {
         for(int j = 0; j < M; j++)
