@@ -286,6 +286,8 @@ void MainWindow::start_level()
                 backmap[i][j] = 3, play = std::make_pair(i, j);
             if(map[i][j] > 4)
                 backmap[i][j] = 3;
+            if(map[i][j] == 0)
+                map[i][j] = 5, backmap[i][j] = 2, all++;
         }
     }
     mx = std::max(N, M);
