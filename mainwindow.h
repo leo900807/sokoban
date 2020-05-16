@@ -12,6 +12,7 @@
 #include <QPushButton>
 #include <QDir>
 #include <QSignalMapper>
+#include <QMediaPlayer>
 
 namespace Ui {
 class MainWindow;
@@ -55,6 +56,7 @@ private:
     void level_clear();
     void all_clear();
     QSignalMapper *mapper = new QSignalMapper();
+    QMediaPlayer *run = new QMediaPlayer(), *fuee = new QMediaPlayer();
 
 };
 

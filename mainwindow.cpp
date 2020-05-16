@@ -6,6 +6,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    run->setMedia(QUrl("qrc:/musics/clear.mp3"));
+    fuee->setMedia(QUrl("qrc:/musics/replay.mp3"));
     background->setGeometry(0, 0, 1000, 800);
     background->setPixmap(QPixmap(":/images/Title.jpg"));
     background->setScaledContents(1);
@@ -199,6 +201,7 @@ void MainWindow::NextLevel()
 
 void MainWindow::Replay()
 {
+    fuee->play();
     start_level();
 }
 
@@ -385,6 +388,7 @@ void MainWindow::paintmap()
         }
         else
             all_clear();
+        run->play();
     }
 }
 

@@ -13,5 +13,7 @@
         <file>images/Level_Cleared.png</file>
         <file>datas/level_3.dat</file>
         <file>datas/level_4.dat</file>
+        <file>musics/clear.mp3</file>
+        <file>musics/replay.mp3</file>
     </qresource>
 </RCC>
